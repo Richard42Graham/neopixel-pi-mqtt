@@ -13,7 +13,6 @@ pixels = neopixel.NeoPixel(pixel_pin, num_pixels, brightness=0.2, auto_write=Fal
 
 
 def wheel(pos):
-    # Input a value 0 to 255 to get a color value.
     # The colours are a transition r - g - b - back to r.
     if pos < 0 or pos > 255:
         r = g = b = 0
@@ -33,13 +32,6 @@ def wheel(pos):
         b = 0 # int(255 - pos*3)
     return (r, g, b) if ORDER == neopixel.RGB or ORDER == neopixel.GRB else (r, g, b, 0)
 
-def rainbow_cycle(wait):
-    for j in range(255):
-        for i in range(num_pixels):
-            pixel_index = (i * 256 // num_pixels) + j
-            pixels[i] = wheel(pixel_index & 255)
-        pixels.show()
-        time.sleep(wait)
 
 def pixey(wiat):
    for i in range(num_pixels):
@@ -58,10 +50,8 @@ def Rando(wait):
       pixels[ random.randint(1,(num_pixels -1)) ] = wheel(random.randrange(0,255,5) & 255)
       pixels.show()
       time.sleep(wait)
-#      time.sleep(random.randint(10,100))
 
 while True:
 
-#   time.sleep(1)
-   poxey(0)
+#   poxey(0)
    Rando(0)

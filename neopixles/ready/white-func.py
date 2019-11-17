@@ -66,5 +66,5 @@ def white(wait):
         pixels.show()
 # off(1)
 
-poxey(1)
-white(1)
+# poxey(1)
+white(4)

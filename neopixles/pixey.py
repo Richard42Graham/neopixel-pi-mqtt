@@ -58,4 +58,4 @@ while True:
 #   time.sleep(1)
 #   poxey(random.randint(1,3))
 
-    poxey(0)
+    poxey()

@@ -11,7 +11,7 @@ pixel_pin = board.D18
 num_pixels = 200
 
 # For RGBW NeoPixels, simply change the ORDER to RGBW or GRBW.
-ORDER = neopixel.RGB
+ORDER = neopixel.GRB
 
 pixels = neopixel.NeoPixel(pixel_pin, num_pixels, brightness=0.2, auto_write=False,
                            pixel_order=ORDER)
@@ -40,9 +40,14 @@ def wheel(pos):
 
 wait = 1
 
+# define desired triplet array
+
+# define current triplet array
+
 def poxey(wait):
    for i in range(num_pixels):  # start, stop, range
       pixels[i] = wheel(random.randrange(0,255,25))
+#	desired triplet array = rand
       pixels.show()
 #      time.sleep(wait)
 
@@ -53,18 +58,23 @@ def poxey(wait):
 # CURRENT_brightness		= current brightness
 # num_pixels			= number of pixels in the array
 
+def compute_step(target,current,steps):
+   return ((target[0]-current[0])/steps,(target[1]-pixel[1])/steps,(target[2]-pixel[2])/steps)
 
-def red(wait):
+def bound(value):
+   min(255,max(0,int(value)))
+
+def fade(wait):
     steps = wait*30
-    pixelSteps = [((255-pixel[0])/steps,pixel[1]/steps,pixel[2]/steps) for pixel in pixels]
+    pixelSteps = [compute_step( (random.randint(0,255) ,random.randint(0,255),random.randint(0,255)),pixel,wait) for pixel in pixels]
     print(pixelSteps)
-    while True:
-        for i in range(len(pixels)):
-            pixels[i]=(min(255,int(pixels[i][0]+pixelSteps[i][0])), max(0,int(pixels[i][1]-pixelSteps[i][1])),max(0,int(pixels[i][2]-pixelSteps[i][2])))
+    for i in range(len(pixels)):
+        pixels[i]=(bound(pixels[i][0]+pixelSteps[i][0]), bound(pixels[i][1]+pixelSteps[i][1]),bound(pixels[i][2]+pixelSteps[i][2]))
         print(pixels)
         time.sleep(1/30)
         pixels.show()
 # off(1)
 
-# poxey(1)
-red(5)
+poxey(1)
+
+fade(1)
