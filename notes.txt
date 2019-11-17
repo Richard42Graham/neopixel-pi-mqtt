@@ -1,0 +1,13 @@
+
+# format
+# "mode":var(int):speed(int):brighness(int)
+
+# example	turn of slowly 25ms
+# mode:off:25
+
+# example	poxy slowly (100ms) full brightness
+# mode:poxy:100:255
+
+
+
+
