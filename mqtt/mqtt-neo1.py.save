@@ -1,0 +1,84 @@
+import time
+import board
+import neopixel
+import paho.mqtt.client as mqtt
+mqttc = mqtt.Client()
+mqttc.connect("192.168.1.5")
+mqttc.subscribe("test/")
+
+# NeoPixels must be connected to D10, D12, D18 or D21 to work.
+pixel_pin = board.D18
+
+# The number of NeoPixels
+num_pixels = 200
+
+# For RGBW NeoPixels, simply change the ORDER to RGBW or GRBW.
+ORDER = neopixel.GRB
+
+
+
+def off(wait):
+    print("off called")
+
+
+messages = {
+  "off":{
+     "func":off,
+     "args":[int]
+   }
+}
+
+
+
+
+def on_message(client, userdata, message):
+    print("Received message '" + str(message.payload) + "' on topic '"
+        + message.topic + "' with QoS " + str(message.qos))
+    cmd,args = message.payload.decode().split(":")
+    print(cmd)
+    args = args.split(',')
+    message_type = messages[cmd]
+    print(message_type)
+    message_type["func"](*[message_type["args"][i](args[i]) for i in range(len(message_type["args"]))])
+
+mqttc.on_message = on_message
+
+
+# global verables
+
+# brightness                    = desired brightness
+# CURRENT_brightness            = current brightness
+# num_pixels                    = number of pixels in the array
+
+
+def off(wait):
+    pixels.fill((255,255,255))
+    steps = wait*30
+    pixelSteps = [(pixel[0]/steps,pixel[1]/steps,pixel[2]/steps) for pixel in pixels]
+    print(pixelSteps)
+    while True:
+        for i in range(len(pixels)):
+            pixels[i]=(max(0,int(pixels[i][0]-pixelSteps[i][0])), max(0,int(pixels[i][1]-pixelSteps[i][1])),max(0,int(pixels[i][2]-pixelSteps[i][2])))
+        print(pixels)
+        time.sleep(1/30)
+off(1)
+
+# global verables
+
+# brightness                    = desired brightness
+# CURRENT_brightness            = current brightness
+# num_pixels                    = number of pixels in the array
+
+
+def off(wait):
+    pixels.fill((255,255,255))
+    steps = wait*30
+    pixelSteps = [(pixel[0]/steps,pixel[1]/steps,pixel[2]/steps) for pixel in pixels]
+    print(pixelSteps)
+    while True:
+        for i in range(len(pixels)):
+            pixels[i]=(max(0,int(pixels[i][0]-pixelSteps[i][0])), max(0,int(pixels[i][1]-pixelSteps[i][1])),max(0,int(pixels[i][2]-pixelSteps[i][2])))
+        print(pixels)
+        time.sleep(1/30)
+off(1)
+
