@@ -13,29 +13,10 @@ def off(wait):
             pixels[i]=(max(0,int(pixels[i][0]-pixelSteps[i][0])), max(0,int(pixels[i][1]-pixelSteps[i][1])),max(0,int(pixels[i][2]-pixelSteps[i][2])))
         time.sleep(1/30)
 
-def Rando(wait):
-   while True:
-      pixels[ random.randint(1,(num_pixels -1)) ] = wheel(random.randrange(0,255,5) & 255)
-      pixels.show()
-      time.sleep(wait)
-
-
-def red(wait):		# make this fade
-    steps = wait*30
-    pixelSteps = [(pixel[0]/steps,(255-pixel[1])/steps,pixel[2]/steps) for pixel in pixels]
-    while True:
-        for i in range(len(pixels)):
-            pixels[i]=(max(0,int(pixels[i][0]-pixelSteps[i][0])), min(255,int(pixels[i][1]+pixelSteps[i][1])),max(0,int(pixels[i][2]-pixelSteps[i][2])))
-        time.sleep(1/30)
-
-def white(wait):
-    steps = wait*30
-    pixelSteps = [((255-pixel[0])/steps,(255-pixel[1])/steps,(255-pixel[2])/steps) for pixel in pixels]
-    while True:
-        for i in range(len(pixels)):
-            pixels[i]=(min(255,int(pixels[i][0]+pixelSteps[i][0])), min(255,int(pixels[i][1]+pixelSteps[i][1])),min(255,int(pixels[i][2]+pixelSteps[i][2])))
-        time.sleep(1/30)
-
+def white():
+    pixels.fill((255,255,255))
+    print("white")
+ 
 def wheel(pos):
     # The colours are a transition r - g - b - back to r.
     if pos < 0 or pos > 255:
@@ -57,31 +38,24 @@ def wheel(pos):
     return (r, g, b) if ORDER == neopixel.RGB or ORDER == neopixel.GRB else (r, g, b, 0)
 
 def poxey(wait):
-    for i in range(num_pixels):	# start, stop, range
-        pixels[i] = wheel(random.randrange(0,255,25))
-        time.sleep(wait)
+   for i in range(num_pixels):	# start, stop, range
+      pixels[i] = wheel(random.randrange(0,255,25))
+      pixels.show()
+      time.sleep(wait)
 
 commands = {
-  "red":{
-      "func":red,
-      "args":[float]
-  },
   "poxey":{
       "func":poxey,
       "args":[float]
   },
   "off":{
      "func":off,
-     "args":[float]
+     "args":[int]
    },
    "white":{
      "func":white,
-     "args":[float]
-   },
-   "random":{
-     "func":Rando,
-     "args":[float]
-   },
+     "args":[]
+   }
 }
 
 mqttc = mqtt.Client()
@@ -167,7 +141,7 @@ def __main__():
     global show_event
     neo_pixels = neopixel.NeoPixel(pixel_pin, num_pixels, brightness=0.2, auto_write=False, pixel_order=ORDER)
     pixels = Pixels(data_array)
-    startThread(red,[0.5])
+    startThread(poxey,[0])
     mqttc.on_message = on_message
     mqttc.loop_start()
     while True:
