@@ -157,15 +157,21 @@ def startThread(func,args):
     thread.start()
 
 def on_message(client, userdata, message):
-    print("Received message '" + str(message.payload) + "' on topic '" + message.topic + "' with QoS " + str(message.qos))
-    cmd,args = message.payload.decode().split(":")
-    args = args.split(',')
-    commands_type = commands[cmd]
-    startThread(commands_type["func"],[commands_type["args"][i](args[i]) for i in range(len(commands_type["args"]))])
+    try:
+        print("Received message '" + str(message.payload) + "' on topic '" + message.topic + "' with QoS " + str(message.qos))
+        cmd,args = message.payload.decode().split(":")
+        if cmd == "is":
+            return
+        args = args.split(',')
+        commands_type = commands[cmd]
+        startThread(commands_type["func"],[commands_type["args"][i](args[i]) for i in range(len(commands_type["args"]))])
+        mqttc.publish("test/", payload="is:"+cmd+":"+",".join(args))
+    except Exception as e:
+        print(e)
 
 def __main__():
     global show_event
-    neo_pixels = neopixel.NeoPixel(pixel_pin, num_pixels, brightness=0.2, auto_write=False, pixel_order=ORDER)
+    neo_pixels = neopixel.NeoPixel(pixel_pin, num_pixels, brightness=1, auto_write=False, pixel_order=ORDER)
     pixels = Pixels(data_array)
     startThread(red,[0.5])
     mqttc.on_message = on_message
